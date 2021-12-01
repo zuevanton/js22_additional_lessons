@@ -25,4 +25,5 @@ week[lang].forEach(element => console.log(element));
 
 
 let namePerson = 'Александр',
-    result = namePerson === 'Артем' ? console.log('Директор') : namePerson === 'Александр' ? console.log('преподаватель') : console.log('студент');
+    result = namePerson === 'Артем' ? 'Директор' : namePerson === 'Александр' ? 'преподаватель' : 'студент';
+console.log(result);
