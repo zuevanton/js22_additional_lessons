@@ -1,30 +1,66 @@
 'use strict';
+const dateOut = {
+  fullDate: document.querySelector('.long-date'),
+  shortDate: document.querySelector('.short-date'),
+  
+  longFormatDate: new Intl.DateTimeFormat('ru', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }),
+  shortFormatDate: new Intl.DateTimeFormat('ru', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric'
+  }),
+  formatTime: new Intl.DateTimeFormat('ru', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  }),
 
-const week = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
-      div = document.createElement('div'),
-      date = new Date();
+  getLongDateFormat (date){
+    return this.longFormatDate.format(this.date);
+  },
 
-function createDay(day, num){
-  // если попадаем на субботу и вскр, то выводим их Ж и К
-  if (num === date.getDay() && (date.getDay() === 6 || date.getDay() === 0)){
-    div.innerHTML += '<p><b><i>' + day + '</i></b></p>';
-  }
-  // если суббота или вскр, то делаем их К
-  else if (num === 0 || num === 6){
-    div.innerHTML += '<p><i>' + day + '</i></p>';
-  }
-  // если попадаем на день, то делаем Ж
-  else if(num === date.getDay()){
-    div.innerHTML += '<p><b>' + day + '</b></p>';
-  }
-  // выводим без всего
-  else {
-    div.innerHTML += '<p>' + day + '</p>';
+  getShortDateFormat(date){
+    return this.shortFormatDate.format(date);
+  },
+
+  getShortTimeFormat(date){
+   return this.formatTime.format(date);
+  },
+
+  num2str(n, textForms){  
+    n = Math.abs(n) % 100;
+    let n1 = n % 10;
+    if (n > 10 && n < 20) { 
+     return textForms[2];
+    }
+    if (n1 > 1 && n1 < 5) { 
+      return textForms[1]; 
+    }
+    if (n1 === 1) { 
+     return textForms[0]; 
+    }
+     return textForms[2];
+  },
+  outTime(){
+    let date = new Date(),
+        hour = date.getHours(),
+        minute = date.getMinutes(),
+        second = date.getSeconds(),
+        hourDeclension = ' ' + this.num2str(hour, ['час', 'часа', 'часов']) + ' ',
+        minuteDeclension = ' ' + this.num2str(minute, ['минута', 'минуты', 'минут']) + ' ',
+        secondDeclension = ' ' + this.num2str(second, ['секунда', 'секунды', 'секунд']) + ' '
+
+    this.shortDate.innerHTML = this.getShortDateFormat(date) + ' - ' + this.getShortTimeFormat(date)
+    this.fullDate.innerHTML = 'Сегодня ' + this.getLongDateFormat(date) + ', ' + hour + hourDeclension + minute +
+    minuteDeclension + second + secondDeclension
   }
 }
 
-for(let i = 1; i < week.length; i++){
-  createDay(week[i], i);
-}
-createDay(week[0], 0);
-document.body.append(div);
+setInterval(function(){
+  dateOut.outTime();
+}, 1000);
